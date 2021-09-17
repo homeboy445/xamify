@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <title>Analytics, chart, graph, laptop, screen, statistics</title>
+    <g id="_01" data-name="01">
+        <path d="M28,28H4a2,2,0,0,1-2-2V23a1,1,0,0,1,1-1H29a1,1,0,0,1,1,1v3A2,2,0,0,1,28,28ZM4,24v2H28V24Z" fill="#3C0CFF"/>
+        <path d="M27,24H5a1,1,0,0,1-1-1V6A1,1,0,0,1,5,5H27a1,1,0,0,1,1,1V23A1,1,0,0,1,27,24ZM6,22H26V7H6Z" fill="#3C0CFF"/>
+        <path d="M18,25H14a1,1,0,0,1,0-2h4a1,1,0,0,1,0,2Z" fill="#3C0CFF"/>
+        <path d="M16,19a1,1,0,0,1-.6-.2l-3.31-2.48L9.71,18.71a1,1,0,0,1-1.42-1.42l3-3a1,1,0,0,1,1.31-.09l3.31,2.48,6.38-6.39a1,1,0,0,1,1.42,1.42l-7,7A1,1,0,0,1,16,19Z" fill="#3C0CFF"/>
+        <circle cx="26" cy="2.48" r="0.95" fill="#3C0CFF"/>
+        <circle cx="23.05" cy="3.23" r="0.47" fill="#3C0CFF"/>
+    </g>
+</svg>

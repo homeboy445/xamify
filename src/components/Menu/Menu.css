@@ -1,0 +1,63 @@
+.menu {
+  z-index: 10000000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: space-between;
+  background: #f1faff;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 25%;
+  height: 100%;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+.menu > h1 {
+  color: #224c67;
+  text-align: center;
+  align-self: center;
+}
+.title {
+  font-size: 3rem;
+  cursor: pointer;
+  text-shadow: 1px 1px 1px cyan;
+}
+.menu-1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.menu-1 > h2 {
+  margin-left: 2%;
+}
+.menu-2 {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 25%;
+}
+.menu-2 > div {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: lighter;
+}
+.menu-2 > div > h2 {
+  margin-bottom: 12%;
+  font-weight: lighter;
+  transition: 0.9s;
+  cursor: pointer;
+}
+.menu-2 > div > h2:hover {
+  color: blue;
+}
+.menu-2 > div > img {
+  width: 15%;
+  margin-right: 4%;
+}
