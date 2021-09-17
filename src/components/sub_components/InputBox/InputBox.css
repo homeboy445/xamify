@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap");
+.inputbx {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: 2px solid black;
+  margin-left: 1%;
+  margin-right: 1%;
+  transform: scale(0.7);
+  margin-top: 1%;
+  margin-bottom: 1%;
+  border-radius: 4px;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.inputbx > input {
+  width: 100%;
+  border: none;
+  padding: 2%;
+  background: transparent;
+  outline: none;
+  font-size: 1.5rem;
+  margin-left: 1%;
+  margin-bottom: 1%;
+  border-bottom: 2px solid black;
+  font-family: "Azeret Mono", monospace;
+}
+.inputbx > input:focus {
+  border-bottom: 2px solid blue;
+}
+.inputbx > img {
+  width: 5%;
+  margin-top: 2%;
+  margin-right: 2%;
+  margin-bottom: 1%;
+}
