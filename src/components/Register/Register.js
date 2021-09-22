@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import "./Register.css";
+import axios from "axios";
 import Loader from "react-loader-spinner";
 import avatar from "animal-avatar-generator"; //TODO: Re-Consider this.
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import "./Register.css";
+import AuthContext from "../../AuthContext";
 import InputBox from "../sub_components/InputBox/InputBox";
 import Dropdown from "../sub_components/Dropdown/Dropdown";
 import Sequencer from "../Sequencer/Sequencer";
 
 const Register = () => {
+  const Main = useContext(AuthContext);
+  const [students, updateStudentsList] = useState([]);
   const [firstName, set_fName] = useState("");
   const [secondName, set_SName] = useState("");
   const [email, set_email] = useState("");
@@ -17,6 +21,7 @@ const Register = () => {
   const [roll_Number, set_rNumber] = useState("");
   const [AvatarString, set_avString] = useState("First1Name");
   const [searching_status, set_search_status] = useState(false);
+  const [fetchedData, updateStatus] = useState(false);
   let curCharArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
   const getTodaysDate = () => {
     var obj = new Date();
@@ -42,7 +47,6 @@ const Register = () => {
 
   const Shuffler = () => {
     //TODO: Look into it
-    // Make a function debugger extension in vs-code.
     let n = curCharArray.length;
     let a = curCharArray[n - 2];
     curCharArray[n - 2] = curCharArray[n - 1];
@@ -51,7 +55,20 @@ const Register = () => {
     return curCharArray;
   };
 
-  console.log(DateOfBirth);
+  useEffect(() => {
+    if (Main.AccessToken !== null && !fetchedData) {
+      axios
+        .get(Main.url + "/students", {
+          headers: { Authorization: Main.AccessToken },
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          Main.RefreshAccessToken();
+        });
+    }
+  }, [students, Main]);
 
   return (
     <Sequencer
@@ -142,39 +159,39 @@ const Register = () => {
             {`For us to verify if it’s really you ${firstName} ${secondName}, you’ve gotta enter the credentials below.`}
           </h1> */}
           <div className="rg-rlNmbr">
-          <h1>Your university Roll Number,</h1>
-          <div className="rg_rl_bx">
-            <input
-              type="text"
-              placeholder="Enter your roll number"
-              value={roll_Number}
-              onChange={(e) => {
-                set_rNumber(e.target.value.trim());
-                set_search_status(true);
-                ValidateRollNumber();
-              }}
-            />
-            {searching_status ? (
-              <Loader
-                type="Puff"
-                color="#00BFFF"
-                height={30}
-                width={30} //3 secs
+            <h1>Your university Roll Number,</h1>
+            <div className="rg_rl_bx">
+              <input
+                type="text"
+                placeholder="Enter your roll number"
+                value={roll_Number}
+                onChange={(e) => {
+                  set_rNumber(e.target.value.trim());
+                  set_search_status(true);
+                  ValidateRollNumber();
+                }}
               />
-            ) : null}
-          </div>
+              {searching_status ? (
+                <Loader
+                  type="Puff"
+                  color="#00BFFF"
+                  height={30}
+                  width={30} //3 secs
+                />
+              ) : null}
+            </div>
           </div>
           <div className="sq-3">
-          <h1>Choose your correct Date of Birth,</h1>
-          <input
-            type="date"
-            name="D.O.B"
-            className="rg-dob"
-            value={DateOfBirth}
-            onChange={(e) => set_date(e.target.value)}
-            min="1980-01-01"
-            max="2021-12-31"
-          />
+            <h1>Choose your correct Date of Birth,</h1>
+            <input
+              type="date"
+              name="D.O.B"
+              className="rg-dob"
+              value={DateOfBirth}
+              onChange={(e) => set_date(e.target.value)}
+              min="1980-01-01"
+              max="2021-12-31"
+            />
           </div>
         </div>
       }

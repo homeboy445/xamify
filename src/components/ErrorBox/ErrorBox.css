@@ -1,0 +1,35 @@
+.errorBX{
+    display: flex;
+    justify-content: space-between;
+    align-items: space-between;
+    background: white;
+    border: 2px solid red;
+    position: fixed;
+    width: 50%;
+    top: 85%;
+    left: 46%;
+    padding: 0.3%;
+    z-index: 1001010101001;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.erBx_1{
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+.erBx_1 > h2{
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-left: 2%;
+}
+.alert{
+    width: 10%;
+}
+.close{
+    cursor: pointer;
+    width: 3%;
+    margin-right: 2%;
+}
+

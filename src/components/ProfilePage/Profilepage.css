@@ -1,0 +1,73 @@
+:root {
+  --main: #2c6588;
+}
+.prof_page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f1faff;
+  height: 100%;
+  margin-left: 25.5%;
+  min-height: 100vh;
+}
+.rg_img_txt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.rg_img_txt > h2 {
+  width: 100%;
+  margin-top: 10%;
+  font-weight: lighter;
+  cursor: pointer;
+  color: rgb(46, 46, 250);
+  margin-left: 50%;
+  transition: 0.5s ease;
+}
+.rg_img_txt > h2:hover {
+  text-decoration: underline;
+}
+.rg-img {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  width: 80%;
+  height: 100%;
+  background: yellow;
+  border: 2px solid green;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.rg-img > img {
+  width: 70%;
+  margin: 10%;
+}
+.prof_pg_1{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.prof_pg_1 > h1{
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: 4px;
+}
+.prof_pg_1 > .pfg_1_1 {
+    display: flex;
+}
+.prof_pg_1 > .pfg_1_1 > h2:nth-child(1){
+    font-size: 2.5rem;
+    font-weight: 300;
+    font-style: italic;
+}
+.prof_pg_1 > .pfg_1_1 > h2:nth-child(2){
+    font-size: 2.5rem;
+    font-weight: 300;    
+}
+
+

@@ -1,10 +1,17 @@
 import React from "react";
 import "./InputBox.css";
-import user from '../../../assets/icons/user.svg';
-import email from '../../../assets/icons/email.svg';
+import email from "../../../assets/icons/email.svg";
 import password from "../../../assets/icons/password.svg";
+import showPassword from "../../../assets/icons/show_password.svg";
 
-const InputBox = ({ placeholder, type, onChangeCallback, value }) => {
+const InputBox = ({
+  placeholder,
+  type,
+  onChangeCallback,
+  value,
+  iconCallback,
+}) => {
+  iconCallback = typeof iconCallback === undefined ? () => {} : iconCallback;
   return (
     <div className="inputbx">
       <input
@@ -16,13 +23,10 @@ const InputBox = ({ placeholder, type, onChangeCallback, value }) => {
       />
       <img
         src={
-          type === "email"
-            ? email
-            : type === "text"
-            ? user
-            : password
+          type === "email" ? email : type === "text" ? showPassword : password
         }
         alt={type}
+        onClick={iconCallback}
       />
     </div>
   );

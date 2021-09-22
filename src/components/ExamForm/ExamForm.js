@@ -1,31 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./ExamForm.css";
+import axios from "axios";
+import AuthContext from "../../AuthContext";
 import Upload_Icon from "../../assets/icons/upload.png";
 import Close_Icon from "../../assets/icons/close.svg";
 
-const ExamForm = () => {
+const ExamForm = (props) => {
+  const Main = useContext(AuthContext);
+  const [ExamDetails, updateDetails] = useState({
+    id: "",
+    type: "",
+    author: {
+      id: "",
+      email: "",
+      name: "",
+    },
+    subject: {
+      id: "",
+      name: "",
+      course: {
+        id: "",
+        name: "",
+      },
+      year: {
+        id: "",
+        label: "",
+      },
+    },
+    startTime: "",
+    endTime: "",
+  });
   const [questions, set_questions] = useState([
     {
-      question:
-        "What is the worst case time complexity of the binary search algorithm?",
-      type: "MCQ",
-    },
-    {
-      question: "What is the best case time complexity of merge sort?",
-      type: "Type",
-    },
-    {
-      question:
-        "What are some of the tech stacks of JavaScript which are used to developing websites efficiently than the usual way?",
-      type: "MCQ",
-    },
-    {
-      question: "Write the insertion sort pseudo-code.",
-      type: "Upload",
-    },
-    {
-      question: "What is are some algo-design techniques? Explain in brief.",
-      type: "Type",
+      id: "",
+      type: "",
+      text: "",
+      choices: [
+        {
+          id: "",
+          text: "",
+        },
+        {
+          id: "",
+          text: "",
+        },
+      ],
     },
   ]);
   const [submittedQs, set_subQs] = useState([]);
@@ -37,6 +56,7 @@ const ExamForm = () => {
     data: null,
   });
   const [currentImages, set_CurImages] = useState([]);
+  const [fetchedData, updateStatus] = useState(false);
   const [answers, set_answers] = useState({
     0: null,
     1: null,
@@ -45,6 +65,9 @@ const ExamForm = () => {
     4: null,
     5: null,
   });
+  const [Duration, updateDuration] = useState(0);
+  const [Timer, updateTimer] = useState("");
+  const ExamId = props.match.params.id;
 
   const AppendAnswer = (data) => {
     let sub = submittedQs;
@@ -64,13 +87,10 @@ const ExamForm = () => {
     ) {
       AppendAnswer(selectedMCQ);
     }
-    if (questions[ActiveQIndex].type === "Type" && answer_text.length > 0) {
+    if (ExamDetails.type === "DIGITAL" && answer_text.length > 0) {
       AppendAnswer(answer_text);
     }
-    if (
-      questions[ActiveQIndex].type === "Upload" &&
-      answer_Image.data !== null
-    ) {
+    if (ExamDetails.type !== "DIGITAL" && answer_Image.data !== null) {
       AppendAnswer(currentImages);
     }
     set_Index(Math.max(0, ActiveQIndex + val) % questions.length);
@@ -87,10 +107,70 @@ const ExamForm = () => {
       reader.readAsDataURL(file);
     });
 
+  const setTimer = (ss) => {
+    let t1, t2, diff;
+    const numTotime = (ss) => {
+      return ss < 10 ? `0${ss}` : ss;
+    };
+    try {
+      t1 = new Date(ss);
+      t2 = new Date();
+      diff = Math.floor((t1 - t2) / 1e3);
+      let hr = numTotime(Math.floor(diff / (60 * 60))),
+        mn = numTotime(Math.floor(diff / 60) % 60),
+        sec = numTotime(diff % 60);
+      updateTimer(`${hr}:${mn}:${sec}`);
+    } catch {
+      updateTimer("00:00:00");
+    }
+  };
+
+  const getDuration = (start, end) => {
+    let a = new Date(start),
+      b = new Date(end);
+    console.log(a.toTimeString(), " ", b.toTimeString());
+    let dur = Math.floor((b - a) / 60e3);
+    return dur;
+  };
+
+  useEffect(() => {
+    let id = null;
+    if (Main.AccessToken !== null && !fetchedData) {
+      axios
+        .get(Main.url + `/assessments/${ExamId}`, {
+          headers: { Authorization: Main.AccessToken },
+        })
+        .then((response) => {
+          console.log(response.data);
+          updateDuration(
+            getDuration(response.data.startTime, response.data.endTime)
+          );
+          updateStatus(true);
+          updateDetails(response.data);
+          id = setInterval(() => setTimer(response.data.endTime), 1000);
+          set_questions(response.data.questions);
+        });
+    }
+    const alertUser = async (e) => {
+      return "message"; //Preventing the loss of the user's work...
+    };
+    const handle = () => {
+      return; //If the user wants to submit the tests in an immediate manner.
+    };
+    window.onbeforeunload = alertUser;
+    window.onunload = handle;
+    window.addEventListener("unload", handle);
+    return () => {
+      window.onbeforeunload = null;
+      window.onunload = null;
+      clearInterval(id);
+    };
+  }, [Main, Timer]);
+
   return (
     <div className="examFormMainer">
       <div className="examForm_3">
-        <h1>Algorithm Design</h1>
+        <h1>{ExamDetails.subject.name}</h1>
         <div
           className="examForm_question_grid"
           style={{
@@ -129,7 +209,7 @@ const ExamForm = () => {
       </div>
       <div className="xmHdr">
         <h1 className="xmtitle">Xamify</h1>
-        <h1>00:22:00 hours left</h1>
+        <h1>{Timer} hours left</h1>
       </div>
       <div className="examForm">
         <div className="examForm_1">
@@ -165,129 +245,49 @@ const ExamForm = () => {
         <div className="examForm_2">
           <div className="examForm_question">
             <h1>{`Question.${ActiveQIndex + 1}`}</h1>
-            <h2>{questions[ActiveQIndex].question}</h2>
+            <h2>{questions[ActiveQIndex].text}</h2>
           </div>
           <div className="examForm_2_1">
             {questions[ActiveQIndex].type === "MCQ" ? (
               <div className="examForm_answer">
-                <div
-                  className="xmOption"
-                  onClick={() => {
-                    set_selMcq(1);
-                  }}
-                  style={{
-                    border:
-                      selectedMCQ === 1 || answers[ActiveQIndex] === 1
-                        ? "2px solid #3f75ff"
-                        : "2px solid black",
-                    color:
-                      selectedMCQ === 1 || answers[ActiveQIndex] === 1
-                        ? "#3f75ff"
-                        : "black",
-                  }}
-                >
-                  <h2>Option 1</h2>
-                  <input
-                    type="radio"
-                    checked={
-                      selectedMCQ === 1 || answers[ActiveQIndex] === 1
-                        ? true
-                        : false
-                    }
-                    onChange={() => {
-                      set_selMcq(1);
-                    }}
-                  />
-                </div>
-                <div
-                  className="xmOption"
-                  onClick={() => {
-                    set_selMcq(2);
-                  }}
-                  style={{
-                    border:
-                      selectedMCQ === 2 || answers[ActiveQIndex] === 2
-                        ? "2px solid #3f75ff"
-                        : "2px solid black",
-                    color:
-                      selectedMCQ === 2 || answers[ActiveQIndex] === 2
-                        ? "#3f75ff"
-                        : "black",
-                  }}
-                >
-                  <h2>Option 2</h2>
-                  <input
-                    type="radio"
-                    checked={
-                      selectedMCQ === 2 || answers[ActiveQIndex] === 2
-                        ? true
-                        : false
-                    }
-                    onChange={() => {
-                      set_selMcq(2);
-                    }}
-                  />
-                </div>
-                <div
-                  className="xmOption"
-                  onClick={() => {
-                    set_selMcq(3);
-                  }}
-                  style={{
-                    border:
-                      selectedMCQ === 3 || answers[ActiveQIndex] === 3
-                        ? "2px solid #3f75ff"
-                        : "2px solid black",
-                    color:
-                      selectedMCQ === 3 || answers[ActiveQIndex] === 3
-                        ? "#3f75ff"
-                        : "black",
-                  }}
-                >
-                  <h2>Option 3</h2>
-                  <input
-                    type="radio"
-                    checked={
-                      selectedMCQ === 3 || answers[ActiveQIndex] === 3
-                        ? true
-                        : false
-                    }
-                    onChange={() => {
-                      set_selMcq(3);
-                    }}
-                  />
-                </div>
-                <div
-                  className="xmOption"
-                  onClick={() => {
-                    set_selMcq(4);
-                  }}
-                  style={{
-                    border:
-                      selectedMCQ === 4 || answers[ActiveQIndex] === 4
-                        ? "2px solid #3f75ff"
-                        : "2px solid black",
-                    color:
-                      selectedMCQ === 4 || answers[ActiveQIndex] === 4
-                        ? "#3f75ff"
-                        : "black",
-                  }}
-                >
-                  <h2>Option 4</h2>
-                  <input
-                    type="radio"
-                    checked={
-                      selectedMCQ === 4 || answers[ActiveQIndex] === 4
-                        ? true
-                        : false
-                    }
-                    onChange={() => {
-                      set_selMcq(4);
-                    }}
-                  />
-                </div>
+                {(questions[ActiveQIndex].choices || []).map((item, index) => {
+                  return (
+                    <div
+                      className="xmOption"
+                      onClick={() => {
+                        set_selMcq(index);
+                      }}
+                      style={{
+                        border:
+                          selectedMCQ === index ||
+                          answers[ActiveQIndex] === index
+                            ? "2px solid #3f75ff"
+                            : "2px solid black",
+                        color:
+                          selectedMCQ === index ||
+                          answers[ActiveQIndex] === index
+                            ? "#3f75ff"
+                            : "black",
+                      }}
+                    >
+                      <h2>{item.text}</h2>
+                      <input
+                        type="radio"
+                        checked={
+                          selectedMCQ === index ||
+                          answers[ActiveQIndex] === index
+                            ? true
+                            : false
+                        }
+                        onChange={() => {
+                          set_selMcq(index);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            ) : questions[ActiveQIndex].type === "Type" ? (
+            ) : ExamDetails.type === "DIGITAL" ? (
               <div className="examForm_answer_type">
                 <textarea
                   placeholder="Type your answer here..."
@@ -307,6 +307,7 @@ const ExamForm = () => {
                   <img src={Upload_Icon} alt="" />
                   <h2>Upload Image file</h2>
                   <input
+                    accept=".png, .jpg"
                     type="file" // TODO: Add a check and alert for files other than jpgs and pngs
                     onChange={(e) => {
                       ImageToBlob(e.target.files[0]).then((response) => {
@@ -318,22 +319,25 @@ const ExamForm = () => {
                     }}
                   />
                   {answer_Image.data !== null ? (
-                    <button className="upl_Img" onClick={
-                      ()=>{
+                    <button
+                      className="upl_Img"
+                      onClick={() => {
                         let ObjArr = currentImages;
                         let flag = true;
-                        for(const key of ObjArr){
-                          if (key.name === answer_Image.name){
-                            flag = false; break;
+                        for (const key of ObjArr) {
+                          if (key.name === answer_Image.name) {
+                            flag = false;
+                            break;
                           }
                         }
-                        if (flag){
-                          console.log(flag);
+                        if (flag) {
                           ObjArr.push(answer_Image);
                           set_CurImages(ObjArr);
                         }
-                      }
-                    }>Add Image</button>
+                      }}
+                    >
+                      Add Image
+                    </button>
                   ) : null}
                 </div>
                 <div className="uploaded">
@@ -343,7 +347,7 @@ const ExamForm = () => {
                           <div key={index}>
                             <h1>{item.name}</h1>
                             <img src={Close_Icon} alt="x" />
-                          </div>// TODO: Remove the image if close button is pressed.
+                          </div> // TODO: Remove the image if close button is pressed.
                         );
                       })
                     : null}
@@ -356,7 +360,7 @@ const ExamForm = () => {
       <div className="xmBtn">
         <button onClick={() => UpdateQuestionNumber(-1)}>Previous</button>
         <button onClick={() => UpdateQuestionNumber(1)}>
-          {selectedMCQ === null && questions[ActiveQIndex].type === "MCQ"
+          {selectedMCQ === null && ExamDetails.type === "MCQ"
             ? "Next"
             : "Save & Next"}
         </button>
