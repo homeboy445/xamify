@@ -1,6 +1,9 @@
-<h1>Xamify - a student's personal superhero!</h1>
-<h3>Xamify is an exam-taking platform for every student who hates online exams.</h3>
-<br/>
+<h2 align="center"><b><a href="https://xamify.vercel.app//">XAMIFY STUDENT'S DASHBOARD</a></b></h2>
+
+<br>
+<hr>
+<br>
+
 <h2>Motivation behind the idea.</h2>
 <h3>Let's face it, online exams can be a pain specially when you have to write all the answers down manually with the same old paper and pen, and also submit it...(via a lot more exhausting methodologies) well, isn't it booooring😒 Well, this is exactly what we always felt and so we thought why not fix that and so we ended up creating this beast - Xamify which we're sure will make you an ❤ exam lover given its awesome features.</h3>
 <br/>
@@ -8,6 +11,12 @@
 
 <h2>Technologies/Frameworks used</h2>
 <h3>We have used REACT JS for developing our front-end and NODE JS for developing our backend.</h3>
+
+  <h2>Links to some associated repos</h2>
+  <h3><a href="https://github.com/homeboy445/xamify-teacher">Xamify-teachers</a></h3>
+    <h3><a href="https://xamify.herokuapp.com/api">Backend API</a></h3>
+    <h3><a href="https://github.com/ujjawal-shrivastava/xamify-pdf-generator">PDF generator</a></h3>
+<br/>
 
 <h2>Features</h2>
 <h3>✔ Get hold of all of your Active, past and upcoming tests via the dashboard(you don't have maintain a record of your tests now😉.</h3>
@@ -31,4 +40,9 @@
   <li><h3>Clone the repository to your desired directory</h3></li>
   <li><h3>Run 'npm i' and then run 'npm start' and you're done.</h3></li>
 </ul>
+  </br>
+  <h2>Default Login Credentials for a student</h2>
+  <h3>Email: Henry128@xyz.com </h3>
+  <h3>Password: 6889@2001-04-19</h3><br/>
+  
 <h1>Please report any problem if present, Thanks!</h1>
