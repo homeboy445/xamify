@@ -90,7 +90,6 @@ const ExamForm = (props) => {
         answers: [],
       },
       ans = [];
-      console.log(submitObject);
       try {
       for (const key in answers) {
         if (questions[key].type === "MCQ") {
