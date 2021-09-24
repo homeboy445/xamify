@@ -90,8 +90,8 @@ const ExamForm = (props) => {
         answers: [],
       },
       ans = [];
-    try {
-      console.log("=>", answers);
+      console.log(submitObject);
+      try {
       for (const key in answers) {
         if (questions[key].type === "MCQ") {
           ans.push({
@@ -117,7 +117,6 @@ const ExamForm = (props) => {
       });
     }
     submitObject.answers = ans;
-    console.log(JSON.stringify(submitObject));
     if (!navigator.onLine) {
       const offlineObject = {
         studentId: Main.userInfo.id,
