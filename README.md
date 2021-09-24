@@ -40,4 +40,9 @@
   <li><h3>Clone the repository to your desired directory</h3></li>
   <li><h3>Run 'npm i' and then run 'npm start' and you're done.</h3></li>
 </ul>
+  </br>
+  <h2>Default Login Credentials for a student</h2>
+  <h3>Email: Henry128@xyz.com </h3>
+  <h3>Password: 6889@2001-04-19</h3><br/>
+  
 <h1>Please report any problem if present, Thanks!</h1>
