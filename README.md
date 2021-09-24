@@ -9,6 +9,12 @@
 <h2>Technologies/Frameworks used</h2>
 <h3>We have used REACT JS for developing our front-end and NODE JS for developing our backend.</h3>
 
+  <h2>Links to some associated repos</h2>
+  <h3><a href="https://github.com/homeboy445/xamify-teacher">Xamify-teachers</a></h3>
+    <h3><a href="https://xamify.herokuapp.com/api">Backend API</a></h3>
+    <h3><a href="https://github.com/ujjawal-shrivastava/xamify-pdf-generator">PDF generator</a></h3>
+<br/>
+
 <h2>Features</h2>
 <h3>✔ Get hold of all of your Active, past and upcoming tests via the dashboard(you don't have maintain a record of your tests now😉.</h3>
 <h3>✔ We're gonna give you a nice 'examified' sort of a UI, where you'll find it easier to attempt your test.</h3>
