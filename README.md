@@ -1,6 +1,9 @@
-<h1>Xamify - a student's personal superhero!</h1>
-<h3>Xamify is an exam-taking platform for every student who hates online exams.</h3>
-<br/>
+<h2 align="center"><b><a href="https://xamify.vercel.app//">XAMIFY STUDENT'S DASHBOARD</a></b></h2>
+
+<br>
+<hr>
+<br>
+
 <h2>Motivation behind the idea.</h2>
 <h3>Let's face it, online exams can be a pain specially when you have to write all the answers down manually with the same old paper and pen, and also submit it...(via a lot more exhausting methodologies) well, isn't it booooring😒 Well, this is exactly what we always felt and so we thought why not fix that and so we ended up creating this beast - Xamify which we're sure will make you an ❤ exam lover given its awesome features.</h3>
 <br/>
