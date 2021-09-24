@@ -34,7 +34,13 @@ const Menu = () => {
           </h2>
         </div>
       </div>
-      <h1 className="SignOut">Sign out</h1>
+      <h1 className="SignOut" onClick={
+        ()=>{
+          sessionStorage.clear();
+          Main.changeAuth(false);
+          window.location.href='/';
+        }
+      }>Sign out</h1>
     </div>
   );
 };

@@ -1,5 +1,5 @@
-:root{
-  --main:var(--main);
+:root {
+  --main: var(#224c67);
 }
 .dashboard {
   display: flex;
@@ -237,7 +237,7 @@
   background: red;
   position: fixed;
   top: 10%;
-  right: 20%;
+  right: 15%;
   z-index: 100010;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 4%;
@@ -254,6 +254,7 @@
     #8e2de2
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: white;
+  width: 40%;
 }
 .detailBox > h1 {
   font-size: 2.5rem;
@@ -313,3 +314,64 @@
     rgba(50, 50, 93, 0.2) 0 6px 15px 0, rgba(0, 0, 0, 0.1) 0 2px 2px 0,
     rgba(50, 151, 211, 0.3) 0 0 0 4px;
 }
+.prev_sub {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+}
+.mk_sub:hover {
+  color: #49b173;
+  text-decoration: underline;
+}
+.dtls:hover {
+  color: blue;
+  text-decoration: underline;
+}
+.ofl_sub{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+}
+.lab_sub {
+  appearance: button;
+  align-self: center;
+  backface-visibility: hidden;
+  background-color: #5dc185;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: rgba(52, 93, 50, 0.1) 0 0 0 1px inset,
+    rgba(50, 93, 61, 0.1) 0 2px 5px 0, rgba(0, 0, 0, 0.07) 0 1px 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    Ubuntu, sans-serif;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 12px 0 0;
+  outline: none;
+  overflow: hidden;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all 0.2s, box-shadow 0.08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 87%;
+  padding: 3%;
+}
+.lab_sub:disabled {
+  cursor: default;
+}
+.lab_sub:focus {
+  box-shadow: rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
+    rgba(59, 93, 50, 0.2) 0 6px 15px 0, rgba(0, 0, 0, 0.1) 0 2px 2px 0,
+    rgba(50, 151, 211, 0.3) 0 0 0 4px;
+}
+

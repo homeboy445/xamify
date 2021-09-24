@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ExamForm.css";
 import axios from "axios";
+import JWT from "jsonwebtoken";
+import Crypto from "crypto-js";
 import AuthContext from "../../AuthContext";
 import Upload_Icon from "../../assets/icons/upload.png";
 import Close_Icon from "../../assets/icons/close.svg";
@@ -55,8 +57,11 @@ const ExamForm = (props) => {
     name: null,
     data: null,
   });
+  const [editAnswer, updateEditStatus] = useState(false);
+  const [submitPrompt, toggleSubmitPrompt] = useState(false);
   const [currentImages, set_CurImages] = useState([]);
   const [fetchedData, updateStatus] = useState(false);
+  const [ActiveContext, updateContext] = useState(0);
   const [answers, set_answers] = useState({
     0: null,
     1: null,
@@ -74,12 +79,91 @@ const ExamForm = (props) => {
     sub.push(ActiveQIndex + 1);
     set_subQs(sub);
     let ans = answers;
+    console.log(data);
     ans[ActiveQIndex] = data;
     set_answers(ans);
   };
 
+  const submitTheExam = () => {
+    let submitObject = {
+        assessmentId: ExamId,
+        answers: [],
+      },
+      ans = [];
+    try {
+      console.log("=>", answers);
+      for (const key in answers) {
+        if (questions[key].type === "MCQ") {
+          ans.push({
+            questionId: questions[key].id,
+            choiceId: questions[key].choices[answers[key]].id,
+          });
+        } else {
+          if (questions[key].type !== "IMAGE") {
+            ans.push({ questionId: questions[key].id, text: answers[key] });
+          } else {
+            ans.push({ questionId: questions[key].id, images: [] });
+            currentImages.map((item) => {
+              return ans[ans.length - 1].images.push({ data: item.data });
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.log(e);
+      return Main.toggleErrorBox({
+        is: true,
+        info: "Something's wrong. Please try again.",
+      });
+    }
+    submitObject.answers = ans;
+    console.log(JSON.stringify(submitObject));
+    if (!navigator.onLine) {
+      const offlineObject = {
+        studentId: Main.userInfo.id,
+        data: JSON.stringify(submitObject),
+      };
+      const token = JWT.sign(offlineObject, process.env.REACT_APP_TOKEN_KEY, {
+        expiresIn: "2 days",
+      });
+      const encapsulatedOffileObject = {
+        token: token,
+      };
+      var ciphertext = Crypto.AES.encrypt(
+        JSON.stringify(JSON.stringify(encapsulatedOffileObject)),
+        process.env.REACT_APP_TOKEN_KEY
+      ).toString();
+      const element = document.createElement("a");
+      const file = new Blob([ciphertext], {
+        type: "text/plain",
+      });
+      element.href = URL.createObjectURL(file);
+      var nw = new Date(ExamDetails.startTime);
+      element.download = `${
+        ExamDetails.subject.name
+      }_${nw.toDateString()}_${nw.toTimeString()}.txt`;
+      document.body.appendChild(element);
+      element.click();
+    } else {
+      Main.RefreshAccessToken();
+      axios
+        .post(Main.url + "/submissions", submitObject, {
+          headers: { Authorization: Main.AccessToken },
+        })
+        .then((response) => {
+          console.log(response.data);
+          setTimeout(() => (window.location.href = "/dashboard"), 5000);
+        })
+        .catch((err) => {
+          Main.toggleErrorBox({
+            is: true,
+            info: "Something's wrong. Please try again.",
+          });
+        });
+    }
+  };
+
   const UpdateQuestionNumber = (val) => {
-    console.log(answers);
     if (
       selectedMCQ !== null &&
       val !== -1 &&
@@ -90,8 +174,11 @@ const ExamForm = (props) => {
     if (ExamDetails.type === "DIGITAL" && answer_text.length > 0) {
       AppendAnswer(answer_text);
     }
-    if (ExamDetails.type !== "DIGITAL" && answer_Image.data !== null) {
+    if (ExamDetails.type === "IMAGE" && answer_Image.data !== null) {
       AppendAnswer(currentImages);
+    }
+    if (ActiveQIndex === questions.length - 1 && val === 1) {
+      return toggleSubmitPrompt(true);
     }
     set_Index(Math.max(0, ActiveQIndex + val) % questions.length);
     set_selMcq(null);
@@ -108,6 +195,7 @@ const ExamForm = (props) => {
     });
 
   const setTimer = (ss) => {
+    console.log(ss);
     let t1, t2, diff;
     const numTotime = (ss) => {
       return ss < 10 ? `0${ss}` : ss;
@@ -128,27 +216,50 @@ const ExamForm = (props) => {
   const getDuration = (start, end) => {
     let a = new Date(start),
       b = new Date(end);
-    console.log(a.toTimeString(), " ", b.toTimeString());
     let dur = Math.floor((b - a) / 60e3);
     return dur;
   };
 
   useEffect(() => {
     let id = null;
-    if (Main.AccessToken !== null && !fetchedData) {
+    if (
+      Main.AccessToken !== null &&
+      !fetchedData &&
+      Main.userInfo.id !== null
+    ) {
       axios
         .get(Main.url + `/assessments/${ExamId}`, {
           headers: { Authorization: Main.AccessToken },
         })
         .then((response) => {
-          console.log(response.data);
+          if (
+            response.data.subject.year.label !==
+            Main.userInfo.profile.year.label
+          ) {
+            Main.toggleErrorBox({
+              is: true,
+              info: "You're not eligible for this test.",
+            });
+            return (window.location.href = "/dashboard");
+          }
+          if (response.data.questions.length === 0) {
+            return (window.location.href = "/dashboard");
+          }
+          id = setInterval(() => setTimer(response.data.endTime), 1000);
           updateDuration(
             getDuration(response.data.startTime, response.data.endTime)
           );
           updateStatus(true);
           updateDetails(response.data);
-          id = setInterval(() => setTimer(response.data.endTime), 1000);
           set_questions(response.data.questions);
+          let ans = {};
+          for (var i = 0; i < response.data.questions.length; i++) {
+            ans[i] = null;
+          }
+          set_answers(ans);
+        })
+        .catch((err) => {
+          Main.RefreshAccessToken();
         });
     }
     const alertUser = async (e) => {
@@ -165,82 +276,120 @@ const ExamForm = (props) => {
       window.onunload = null;
       clearInterval(id);
     };
-  }, [Main, Timer]);
+  }, [Main, Timer, submittedQs, currentImages, answer_Image]);
 
   return (
     <div className="examFormMainer">
-      <div className="examForm_3">
-        <h1>{ExamDetails.subject.name}</h1>
-        <div
-          className="examForm_question_grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gridTemplateRows: `repeat(${4}, ${50 + 10 / 2}px)`,
-            gridRowGap: "1%",
-          }}
-        >
-          {[
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-            20,
-          ].map((item, index) => {
-            return (
-              <p
-                key={index}
-                style={{
-                  transform: `scale(${1 / Math.max(1, 10 / 5) + 0.5})`,
-                  background: submittedQs.find((item1) => item1 === item)
-                    ? "#5dc185"
-                    : "transparent",
-                  color: submittedQs.find((item1) => item1 === item)
-                    ? "white"
-                    : "#5dc185",
-                }}
-                onClick={() => {
-                  console.log("Clicked");
-                  set_Index(Math.min(questions.length - 1, item - 1));
-                }}
-              >
-                {item}
-              </p>
-            );
-          })}
-        </div>
+      <div
+        className="submit_exam"
+        style={{
+          transform: `scale(${submitPrompt ? 1 : 0.3})`,
+          opacity: submitPrompt ? 1 : 0,
+          pointerEvents: submitPrompt ? "all" : "none",
+        }}
+      >
+        {!navigator.onLine ? (
+          <div>
+            <h1>It seems like you're offline.</h1>
+            <h2>Worry not as you can submit your test later.</h2>
+            <h2>
+              You can submit your test through dashboard whenever you're
+              internet connection becomes stable again, note that you're
+              submission expiration is date is two days from now and so submit
+              it before that if you want to get your submission considered.
+              We're providing you with a not to be tampered with text file that
+              you will have to submit to the dashboard and beware that you're
+              submission will be discarded if this text file is tampered with.
+              Good luck!
+            </h2>
+            <div className="sub_exm_btn">
+              <button onClick={submitTheExam}>
+                Acknowledge & Download File
+              </button>
+              <button onClick={() => toggleSubmitPrompt(false)}>
+                Let me recheck the Exam
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h1>Are you sure you want to submit your exam?</h1>
+            <h2>Well, if yes... we wish you awesome grades😘</h2>
+            <div className="sub_exm_btn">
+              <button onClick={submitTheExam}>Yeah, I'm done.</button>
+              <button onClick={() => toggleSubmitPrompt(false)}>
+                Nope, Not yet.
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="xmHdr">
+      <div
+        className="xmHdr"
+        style={{
+          opacity: !submitPrompt ? 1 : 0.5,
+          pointerEvents: !submitPrompt ? "all" : "none",
+        }}
+      >
         <h1 className="xmtitle">Xamify</h1>
         <h1>{Timer} hours left</h1>
       </div>
-      <div className="examForm">
+      <div
+        className="examForm"
+        style={{
+          opacity: !submitPrompt ? 1 : 0.5,
+          pointerEvents: !submitPrompt ? "all" : "none",
+        }}
+      >
         <div className="examForm_1">
           <div className="exmBtns_1">
-            <button>Instruction</button>
-            <button>Anouncements</button>
+            <button onClick={() => updateContext(0)}>Instruction</button>
+            <button onClick={() => updateContext(1)}>Questions</button>
           </div>
-          <div className="exmSec">
-            Attempt this test based on your own knowledge and just don’t cheat
-            cause you're harming your integrity if you’re doing it. And some
-            giberrish text... Then a mist closed over the black water and the
-            robot gardener. Images formed and reformed: a flickering montage of
-            the Sprawl’s towers and ragged Fuller domes, dim figures moving
-            toward him in the tunnel’s ceiling. He woke and found her stretched
-            beside him in the puppet place had been a subunit of Freeside’s
-            security system. Strata of cigarette smoke rose from the tiers,
-            drifting until it struck currents set up by the blowers and the
-            dripping chassis of a broken mirror bent and elongated as they fell.
-            Why bother with the movement of the train, their high heels like
-            polished hooves against the gray metal of the car’s floor. He’d
-            waited in the tunnel’s ceiling. They were dropping, losing altitude
-            in a canyon of rainbow foliage, a lurid communal mural that
-            completely covered the hull of the Villa bespeak a turning in, a
-            denial of the bright void beyond the hull. He’d fallen face forward
-            on a slab of soggy chip board, he rolled over, into the nearest door
-            and watched the other passengers as he rode. They were dropping,
-            losing altitude in a canyon of rainbow foliage, a lurid communal
-            mural that completely covered the hull of the arcade showed him
-            broken lengths of damp chipboard and the dripping chassis of a
-            skyscraper canyon.
-          </div>
+          {ActiveContext === 0 ? (
+            <div className="exmSec">
+              {ExamDetails.instructions ||
+                "Attempt this test based on your own knowledge and just don’t cheat cause you're harming your integrity if you’re doing it. Good luck!"}
+            </div>
+          ) : ActiveContext === 1 ? (
+            <div
+              className="examForm_question_grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gridTemplateRows: `repeat(${questions.length + 1}, ${60}px)`,
+                gridRowGap: "1%",
+              }}
+            >
+              {(
+                questions || [
+                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                  19, 20,
+                ]
+              ).map((it, index) => {
+                let item = index + 1;
+                return (
+                  <p
+                    key={index}
+                    style={{
+                      transform: `scale(${1 / Math.max(1, 10 / 5) + 0.5})`,
+                      background: submittedQs.find((item1) => item1 === item)
+                        ? "#5dc185"
+                        : "transparent",
+                      color: submittedQs.find((item1) => item1 === item)
+                        ? "white"
+                        : "#5dc185",
+                    }}
+                    onClick={() => {
+                      set_Index(Math.min(questions.length - 1, item - 1));
+                    }}
+                  >
+                    {item}
+                  </p>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
         <div className="examForm_2">
           <div className="examForm_question">
@@ -257,6 +406,7 @@ const ExamForm = (props) => {
                       onClick={() => {
                         set_selMcq(index);
                       }}
+                      key={index}
                       style={{
                         border:
                           selectedMCQ === index ||
@@ -293,10 +443,13 @@ const ExamForm = (props) => {
                   placeholder="Type your answer here..."
                   value={
                     (answer_text === ""
-                      ? answers[ActiveQIndex]
+                      ? editAnswer
+                        ? answer_text
+                        : answers[ActiveQIndex]
                       : answer_text) || ""
                   }
                   onChange={(e) => {
+                    updateEditStatus(answers[ActiveQIndex] !== null);
                     set_text(e.target.value);
                   }}
                 ></textarea>
@@ -308,7 +461,7 @@ const ExamForm = (props) => {
                   <h2>Upload Image file</h2>
                   <input
                     accept=".png, .jpg"
-                    type="file" // TODO: Add a check and alert for files other than jpgs and pngs
+                    type="file"
                     onChange={(e) => {
                       ImageToBlob(e.target.files[0]).then((response) => {
                         set_Image({
@@ -333,6 +486,11 @@ const ExamForm = (props) => {
                         if (flag) {
                           ObjArr.push(answer_Image);
                           set_CurImages(ObjArr);
+                        } else {
+                          Main.toggleErrorBox({
+                            is: true,
+                            info: "You cannot submit the same image twice.",
+                          });
                         }
                       }}
                     >
@@ -357,12 +515,20 @@ const ExamForm = (props) => {
           </div>
         </div>
       </div>
-      <div className="xmBtn">
+      <div
+        className="xmBtn"
+        style={{
+          opacity: !submitPrompt ? 1 : 0.5,
+          pointerEvents: !submitPrompt ? "all" : "none",
+        }}
+      >
         <button onClick={() => UpdateQuestionNumber(-1)}>Previous</button>
         <button onClick={() => UpdateQuestionNumber(1)}>
           {selectedMCQ === null && ExamDetails.type === "MCQ"
             ? "Next"
-            : "Save & Next"}
+            : ActiveQIndex !== questions.length - 1
+            ? "Save & Next"
+            : "Finish & Submit test"}
         </button>
       </div>
     </div>

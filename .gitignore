@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /auth.rest
+/.env
 
 # testing
 /coverage

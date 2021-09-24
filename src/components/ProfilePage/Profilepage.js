@@ -1,12 +1,26 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./Profilepage.css";
-import axios from "axios";
 import AuthContext from "../../AuthContext";
 
 const Profilepage = () => {
   const Main = useContext(AuthContext);
-  const [studentsList, updateList] = useState([]);
-  const [fetchData, updateStatus] = useState(false);
+  const [studentInfo, updateInfo] = useState({
+    id: "",
+    email: "",
+    name: "Student",
+    type: "",
+    profile: {
+      rollNo: "",
+      year: {
+        id: "",
+        label: "YEAR",
+      },
+      course: {
+        id: "",
+        name: "Course Name",
+      },
+    },
+  });
   const [ChangeAvatar, changeIt] = useState(localStorage.getItem("dp") || 0);
 
   const getString = (num) => {
@@ -18,8 +32,11 @@ const Profilepage = () => {
   };
 
   useEffect(() => {
+    if (Main.userInfo.id !== ''){
+      updateInfo(Main.userInfo);
+    }
     localStorage.setItem("dp", getString(ChangeAvatar));
-  }, [ChangeAvatar, Main]);
+  }, [studentInfo, ChangeAvatar, Main]);
 
   return (
     <div className="prof_page">
@@ -33,12 +50,11 @@ const Profilepage = () => {
         </div>
       </div>
       <div className="prof_pg_1">
-        <h1>{Main.userInfo.name}</h1>
+         <h1>{studentInfo.name}</h1>
         <div className="pfg_1_1">
-          <h2>Course Name,</h2>
-          <h2>YEAR</h2>
+          <h2>{studentInfo.profile.course.name},</h2>
+          <h2>{studentInfo.profile.year.label}</h2>
         </div>
-        <div>Subjects...</div>
       </div>
     </div>
   );

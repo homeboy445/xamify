@@ -19,17 +19,11 @@ const Home = () => {
             >
               SignIn
             </button>
-            <button
-              className="rgtr_btn"
-              onClick={() => (window.location.href = "/register")}
-            >
-              Register
-            </button>
           </div>
         </div>
         <div className="hc-sub2">
-          <h1>Online Exams made fun</h1>
-          <h2>Experience the ultimate exam taking platform.</h2>
+          <h1>Make Exam taking your hobby.</h1>
+          <h2>Attending an Exam has never been this fun.</h2>
         </div>
       </div>
     </div>
