@@ -31,4 +31,4 @@
   <li><h3>Clone the repository to your desired directory</h3></li>
   <li><h3>Run 'npm i' and then run 'npm start' and you're done.</h3></li>
 </ul>
-<h1>Please report any problem if present, Thank!</h1>
+<h1>Please report any problem if present, Thanks!</h1>
