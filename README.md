@@ -19,7 +19,7 @@
 <br/>
 
 <h2>Features</h2>
-<h3>✔ Get hold of all of your Active, past and upcoming tests via the dashboard(you don't have maintain a record of your tests now😉.</h3>
+<h3>✔ Get hold of all of your Active, past and upcoming tests via the dashboard(you don't have maintain a record of your tests now😉.)</h3>
 <h3>✔ We're gonna give you a nice 'examified' sort of a UI, where you'll find it easier to attempt your test.</h3>
 <h3>✔ Flexibility of attempting tests... yes, you heard it right! there are three modes for attending tests namely:</h3>
 <ul>
