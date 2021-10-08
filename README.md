@@ -20,12 +20,12 @@
 
 <h2>Features</h2>
 <h3>✔ Get hold of all of your Active, past and upcoming tests via the dashboard(you don't have maintain a record of your tests now😉.)</h3>
-<h3>✔ We're gonna give you a nice 'examified' sort of a UI, where you'll find it easier to attempt your test.</h3>
+<h3>✔ The UI has been specially made keeping in mind the needs of an average student and so, it'll be an awesome ride - your test😎.</h3>
 <h3>✔ Flexibility of attempting tests... yes, you heard it right! there are three modes for attending tests namely:</h3>
 <ul>
 <ol><h4>➡ Typing the answer(We know it's your favourite as it's super convenient).</ol></h4>
 <ol><h4>➡ Hand written(Sometimes adapting to old standard's is cool too, after all old is gold😎).</ol></h4>
-<ol><h4>➡ Multiple Choice Question(Well, it's upto your respective teacher).</ol></h4>
+<ol><h4>➡ Multiple Choice Question(Well, it needs no introduction).</ol></h4>
 </ul>
 <h3>✔ Make Offline test submissions - yes it's possible! After all it's xamify</h3>
 <br/>
