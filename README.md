@@ -43,6 +43,6 @@
   </br>
   <h2>Default Login Credentials for a student</h2>
   <h4>email: ImJon33@xvz.com</h4>
-  <h4>password: 8322@@2002-07-19</h3><br/>
+  <h4>password: 8322@2002-07-19</h3><br/>
   
 <h1>Please report any problem if present, Thanks!</h1>
