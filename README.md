@@ -31,8 +31,11 @@
 <br/>
 <h2>Some ScreenShots</h2>
 <img src="https://user-images.githubusercontent.com/61937872/134605921-e84e0257-7576-4ef8-b074-7f34f0bcdb4b.png" alt=""/>
+  <br />
 <img src="https://user-images.githubusercontent.com/61937872/134606160-a28fcb21-d9ca-451e-b26e-946a4247a755.png" alt=""/>
+  <br />
 <img src="https://user-images.githubusercontent.com/61937872/134606190-7a667609-96fb-44d5-81a8-e91772774715.png" alt=""/>
+  <br />
 <img src="https://user-images.githubusercontent.com/61937872/134606243-6804ebb4-614d-44a0-aceb-2bd0efce299c.png" alt=""/>
 <br/> 
 <h2>Steps for building locally</h2>
